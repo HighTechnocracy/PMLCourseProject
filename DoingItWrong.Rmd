@@ -5,3 +5,40 @@ date: "March 16, 2015"
 output: html_document
         keep_md: true
 ---
+```{r}
+install.packages("dplyr", repos="http://cran.rstudio.com/")
+library("dplyr")
+install.packages("caret", repos="http://cran.rstudio.com/")
+library("caret")
+```
+
+#Executive Summary
+
+#Get and Process the Data
+The first step of the analysis to retrieve the data from the internet, save it to a local folder and load it into R.
+
+```{r cache=TRUE}
+download.file(url="https://d396qusza40orc.cloudfront.net/predmachlearn/pml-training.csv", destfile="train_031215.csv", method="curl")
+download.file(url="https://d396qusza40orc.cloudfront.net/predmachlearn/pml-testing.csv", destfile="test_031215.csv", method="curl")
+
+rawTrain <- read.csv("train_031215.csv")
+test <- read.csv("test_031215.csv")
+```
+
+We will need to pare away predictors with little value. To begin, we identify predictors with high numbers of NAs or no measurements at all. After this the dataset only has 53 predictors. To futher eliminate unnecessary predictors, random forest (from the caret package) was run to determine the most important variables.
+
+```{r cache=TRUE}
+x <- sapply(rawTrain, function(x) sum(is.na(x))) ##Sums the number of NAs in each row.
+x <- x[x >= 19216] ## creates a vector of only those with 19,216 NAs.
+x <-names(x) ## creates a vector with each column name
+rawTrain <- rawTrain[,!(names(rawTrain) %in% x)] ## eliminates all columns that appear in rawTrain and in the object x
+rawTrain <- select(rawTrain, -1, -c(3:7), -c(12:20), -c(43:48), -c(52:61), -c(74:82)) ## eliminates rows with lots of blanks using 'select' from the dplyr package.
+rawTrain <- train(classe ~ ., rawTrain, method="rf", importance=TRUE)
+varImp(rawTrain)
+```
+
+
+###Citation:
+This dataset is licensed under the Creative Commons license (CC BY-SA). The CC BY-SA license means you can remix, tweak, and build upon this work even for commercial purposes, as long as you credit the authors of the original work and you license your new creations under the identical terms we are licensing to you. This license is often compared to "copyleft" free and open source software licenses. All new works based on this dataset will carry the same license, so any derivatives will also allow commercial use.
+
+Velloso, E.; Bulling, A.; Gellersen, H.; Ugulino, W.; Fuks, H. Qualitative Activity Recognition of Weight Lifting Exercises. Proceedings of 4th International Conference in Cooperation with SIGCHI (Augmented Human '13) . Stuttgart, Germany: ACM SIGCHI, 2013.
