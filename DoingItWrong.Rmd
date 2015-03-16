@@ -1,0 +1,7 @@
+---
+title: 'Working Out: You’re Doing it Wrong'
+author: "HT"
+date: "March 16, 2015"
+output: html_document
+        keep_md: true
+---
