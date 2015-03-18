@@ -21,7 +21,7 @@ The first step of the analysis to retrieve the data from the internet, save it t
 download.file(url="https://d396qusza40orc.cloudfront.net/predmachlearn/pml-training.csv", destfile="train_031215.csv", method="curl")
 download.file(url="https://d396qusza40orc.cloudfront.net/predmachlearn/pml-testing.csv", destfile="test_031215.csv", method="curl")
 
-rawTrain <- read.csv("train_031215.csv")
+rawTrain2 <- read.csv("train_031215.csv")
 test <- read.csv("test_031215.csv")
 ```
 
@@ -33,10 +33,42 @@ x <- x[x >= 19216] ## creates a vector of only those with 19,216 NAs.
 x <-names(x) ## creates a vector with each column name
 rawTrain <- rawTrain[,!(names(rawTrain) %in% x)] ## eliminates all columns that appear in rawTrain and in the object x
 rawTrain <- select(rawTrain, -1, -c(3:7), -c(12:20), -c(43:48), -c(52:61), -c(74:82)) ## eliminates rows with lots of blanks using 'select' from the dplyr package.
-rawTrain <- train(classe ~ ., rawTrain, method="rf", importance=TRUE)
-varImp(rawTrain)
+trialRF <- train(classe ~ ., rawTrain, method="rf", importance=TRUE, prox=TRUE)
+varImp(trialRF)
 ```
 
+Of the top 20 variables listed none after the first 8 have an importance value > 50.0 for any of the 5 classes. So those variables are captured as the maximum number of potential predictors.
+
+```{r}
+fit1 <- glm(classe ~ roll_belt + pitch_belt + pitch_forearm + magnet_dumbbell_y + magnet_dumbbell_z + yaw_belt + accel_forearm_x + roll_forearm, data = rawTrain, family="quasibinomial")
+summary(fit1)
+```
+
+A quick test, looking at the significance of the variables in a generalized linear model (family = "quasibinomial" i.e., "logit") reveals that one of them, "magnet_dumbell_y," has no significance in the presence of the other variables, so it to is cut from the prediction process (above). 
+
+```{r}
+finalTrain <- select(rawTrain, classe, roll_belt, pitch_belt, pitch_forearm, magnet_dumbbell_z, yaw_belt, accel_forearm_x, roll_forearm)
+```
+
+Random Forest was run again in order to create the best route given the new variable set.
+
+```{r}
+finalRF <- train(classe ~ ., finalTrain, method="rf", importance=TRUE, prox=TRUE)
+```
+
+```{r}
+pred <- predict(finalRF, test)
+test$predRight <- pred==test$classe
+table(pred, test$classe)
+```
+
+pml_write_files = function(x){
+  n = length(x)
+  for(i in 1:n){
+    filename = paste0("problem_id_",i,".txt")
+    write.table(x[i],file=filename,quote=FALSE,row.names=FALSE,col.names=FALSE)
+  }
+}
 
 ###Citation:
 This dataset is licensed under the Creative Commons license (CC BY-SA). The CC BY-SA license means you can remix, tweak, and build upon this work even for commercial purposes, as long as you credit the authors of the original work and you license your new creations under the identical terms we are licensing to you. This license is often compared to "copyleft" free and open source software licenses. All new works based on this dataset will carry the same license, so any derivatives will also allow commercial use.
