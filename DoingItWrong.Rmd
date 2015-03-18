@@ -2,20 +2,21 @@
 title: 'Working Out: You’re Doing it Wrong'
 author: "HT"
 date: "March 16, 2015"
-output: html_document
-        keep_md: true
 ---
 ```{r}
 install.packages("dplyr", repos="http://cran.rstudio.com/")
 library("dplyr")
 install.packages("caret", repos="http://cran.rstudio.com/")
 library("caret")
-install.packages("caret", repos="http://cran.rstudio.com/")
-library("caret")
 ```
 
-#Executive Summary
+#Introduction
+With the advent of personal fitness recording devices like the Fitbit, Jawbone, and the Garmin Vevofit, the amount of physical activity data available to researchers is enormous. However, this resource is wasted if it cannot be put to good use. In the past, health behavior modifications have focused on apparent deficiencies in the amount of exercise that people get each day. If an individual was exercising a sufficient amount of time each day, and a sufficient amount of days each week, the advice they could receive to improve their health was limited. With these devices however, advocates can move from the quantity of exercise to its quality--allowing each person access to a personalized trainer who can, for example, help them with their form during strength training.
 
+#Executive Summary
+This analysis uses data collected through various sensors placed on several participants and on a dumbbell they used. Each participant was asked to perform five sets of ten dumbbell curl repetitions. In four of the ten sets, the participants were guided by an expert to perform the motion incorrectly in a specific way (e.g., leaning too far forward or not performing the entire range of motion). One of the five sets was performed with correct form. The question this analysis hopes to answer is: Is there a way to measure and distinguish correctly performed exercises from incorrectly performed exercises.
+
+The analysis uses a random forest algorithm to find the most important variables of the 160 collected and uses it to make predictions against both a validation and test set. The chosen prediction model was able to correctly classify 20 out of 20 cases in the test set, confirming that such predictions are possible--at least in the setting where the correct and incorrect postures/motions exist within a specified range, guided by a professional.
 
 #Get and Process the Data
 The first step of the analysis to retrieve the data from the internet, save it to a local folder and load it into R.
@@ -35,14 +36,19 @@ rawTrain <- train[inTrain,]
 vTrain <- train[-inTrain,]
 ```
 
-We will need to pare away predictors with little value. To begin, we identify predictors with high numbers of NAs or no measurements at all. After this the dataset only has 53 predictors. To futher eliminate unnecessary predictors, random forest (from the caret package) was run to determine the most important variables.
+We will need to pare away predictors with little value. To begin, we identify predictors with high numbers of NAs or no measurements at all. After this the dataset only has 53 predictors. 
 
 ```{r cache=TRUE}
-x <- sapply(rawTrain, function(x) sum(is.na(x))) ##Sums the number of NAs in each row.
-x <- x[x >= 19216] ## creates a vector of only those with 19,216 NAs.
-x <-names(x) ## creates a vector with each column name
-rawTrain <- rawTrain[,!(names(rawTrain) %in% x)] ## eliminates all columns that appear in rawTrain and in the object x
-rawTrain <- select(rawTrain, -1, -c(3:7), -c(12:20), -c(43:48), -c(52:61), -c(74:82)) ## eliminates rows with lots of blanks using 'select' from the dplyr package.
+x <- sapply(rawTrain, function(x) sum(is.na(x)))
+x <- x[x > 0]
+x <-names(x)
+rawTrain <- rawTrain[,!(names(rawTrain) %in% x)]
+rawTrain <- select(rawTrain, -1, -c(3:7), -c(12:20), -c(43:48), -c(52:61), -c(74:82))
+```
+
+To futher eliminate unnecessary predictors, random forest (from the caret package) was run to determine the most important variables.
+
+```{r cache=TRUE}
 trialRF <- train(classe ~ ., rawTrain, method="rf", importance=TRUE, prox=TRUE)
 varImp(trialRF)
 ```
@@ -63,7 +69,7 @@ finalTrain <- select(rawTrain, classe, roll_belt, pitch_belt, pitch_forearm, mag
 Random Forest was run again in order to create the best route given the new variable set.
 
 ```{r}
-finalRF <- train(classe ~ ., finalTrain, method="rf", importance=TRUE, prox=TRUE)
+finalRF <- train(classe ~ ., finalTrain, method="rf", importance=TRUE, prox=TRUE, cache=TRUE)
 ```
 
 Then we use the model to predict the values in the validation set:
@@ -74,9 +80,11 @@ vTrain$right <- pred==vTrain$classe
 table(pred, vTrain$classe)
 ```
 
-We can see that the chosen model was able to accurately predict X values of the 1960 values in the training set, an accuracy rating of Y. Although not perfect, the accuracy is quite good and the model was adopted for predicting the values in the test set. Of the 20 cases in the test set, the chosen model predicted all 20 correctly.
+We can see that the chosen model was able to accurately predict X values of the 1960 values in the training set, an accuracy rating of Y. Although not perfect, the accuracy is quite good and the model is adopted for predicting the values in the test set. Of the 20 cases in the test set, the chosen model predicted all 20 correctly.
+
+
  ============================================================
-The following code was used to create text files for submitting predictions
+ The following code was used to create text files for submitting predictions
 of the test cases to Coursera for evaluation.
 pml_write_files = function(x){
 n = length(x)
