@@ -75,17 +75,16 @@ table(pred, vTrain$classe)
 ```
 
 We can see that the chosen model was able to accurately predict X values of the 1960 values in the training set, an accuracy rating of Y. Although not perfect, the accuracy is quite good and the model was adopted for predicting the values in the test set. Of the 20 cases in the test set, the chosen model predicted all 20 correctly.
-
-# ============================================================
-# The following code was used to create text files for submitting predictions
-# of the test cases to Coursera for evaluation.
-# pml_write_files = function(x){
-# n = length(x)
-#  for(i in 1:n){
-#    filename = paste0("problem_id_",i,".txt")
-#    write.table(x[i],file=filename,quote=FALSE,row.names=FALSE,col.names=FALSE)
-#  }
-#}
+ ============================================================
+The following code was used to create text files for submitting predictions
+of the test cases to Coursera for evaluation.
+pml_write_files = function(x){
+n = length(x)
+for(i in 1:n){
+        filename = paste0("problem_id_",i,".txt")
+        write.table(x[i],file=filename,quote=FALSE,row.names=FALSE,col.names=FALSE)
+  }
+}
 
 ###Citation:
 This dataset is licensed under the Creative Commons license (CC BY-SA). The CC BY-SA license means you can remix, tweak, and build upon this work even for commercial purposes, as long as you credit the authors of the original work and you license your new creations under the identical terms we are licensing to you. This license is often compared to "copyleft" free and open source software licenses. All new works based on this dataset will carry the same license, so any derivatives will also allow commercial use.
