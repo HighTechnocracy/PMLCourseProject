@@ -1,0 +1,304 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Pmlcourseproject by HighTechnocracy</title>
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="javascripts/respond.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <!--[if lt IE 8]>
+    <link rel="stylesheet" href="stylesheets/ie.css">
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+  </head>
+  <body>
+      <div id="header">
+        <nav>
+          <li class="fork"><a href="https://github.com/HighTechnocracy/PMLCourseProject">View On GitHub</a></li>
+          <li class="downloads"><a href="https://github.com/HighTechnocracy/PMLCourseProject/zipball/master">ZIP</a></li>
+          <li class="downloads"><a href="https://github.com/HighTechnocracy/PMLCourseProject/tarball/master">TAR</a></li>
+          <li class="title">DOWNLOADS</li>
+        </nav>
+      </div><!-- end header -->
+
+    <div class="wrapper">
+
+      <section>
+        <div id="title">
+          <h1>Pmlcourseproject</h1>
+          <p>The Practical Machine Learning Course Project assignment for Coursera</p>
+          <hr>
+          <span class="credits left">Project maintained by <a href="https://github.com/HighTechnocracy">HighTechnocracy</a></span>
+          <span class="credits right">Hosted on GitHub Pages &mdash; Theme by <a href="https://twitter.com/michigangraham">mattgraham</a></span>
+        </div>
+
+        <p>&lt;!DOCTYPE html&gt;</p>
+
+<p></p>
+
+<p></p>
+
+<p>
+
+</p>
+
+<p></p>
+
+<p></p>
+
+<p></p>Working Out: You’re Doing it Wrong
+
+
+
+<p>
+
+</p>
+
+
+
+code{white-space: pre;}
+
+<p></p>
+
+
+
+
+  pre:not([class]) {
+    background-color: white;
+  }
+
+
+
+
+<p></p>
+
+<p></p>
+
+
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+
+<div>
+
+
+<div id="header">
+<h1>
+<a id="working-out-youre-doing-it-wrong" class="anchor" href="#working-out-youre-doing-it-wrong" aria-hidden="true"><span class="octicon octicon-link"></span></a>Working Out: You’re Doing it Wrong</h1>
+<h4>
+<a id="ht" class="anchor" href="#ht" aria-hidden="true"><span class="octicon octicon-link"></span></a><em>HT</em>
+</h4>
+<h4>
+<a id="march-16-2015" class="anchor" href="#march-16-2015" aria-hidden="true"><span class="octicon octicon-link"></span></a><em>March 16, 2015</em>
+</h4>
+</div>
+
+<pre><code>install.packages("dplyr", repos="http://cran.rstudio.com/")</code></pre>
+
+<pre><code>## 
+## The downloaded binary packages are in
+##  /var/folders/zv/g94k2wgj0w990dw5qd4ls9p40000gn/T//Rtmp0SXwky/downloaded_packages</code></pre>
+
+<pre><code>library("dplyr")</code></pre>
+
+<pre><code>## 
+## Attaching package: 'dplyr'
+## 
+## The following object is masked from 'package:stats':
+## 
+##     filter
+## 
+## The following objects are masked from 'package:base':
+## 
+##     intersect, setdiff, setequal, union</code></pre>
+
+<pre><code>install.packages("caret", repos="http://cran.rstudio.com/")</code></pre>
+
+<pre><code>## 
+## The downloaded binary packages are in
+##  /var/folders/zv/g94k2wgj0w990dw5qd4ls9p40000gn/T//Rtmp0SXwky/downloaded_packages</code></pre>
+
+<pre><code>library("caret")</code></pre>
+
+<pre><code>## Loading required package: lattice
+## Loading required package: ggplot2</code></pre>
+
+<div id="introduction">
+<h1>
+<a id="introduction" class="anchor" href="#introduction" aria-hidden="true"><span class="octicon octicon-link"></span></a>Introduction</h1>
+<p>With the advent of personal fitness recording devices like the Fitbit, Jawbone, and the Garmin Vevofit, the amount of physical activity data available to researchers is enormous. However, this resource is wasted if it cannot be put to good use. In the past, health behavior modifications have focused on apparent deficiencies in the amount of exercise that people get each day. If an individual was exercising a sufficient amount of time each day, and a sufficient amount of days each week, the advice they could receive to improve their health was limited. With these devices however, advocates can move from the quantity of exercise to its quality–allowing each person access to a personalized trainer who can, for example, help them with their form during strength training.</p>
+</div>
+
+<div id="executive-summary">
+<h1>
+<a id="executive-summary" class="anchor" href="#executive-summary" aria-hidden="true"><span class="octicon octicon-link"></span></a>Executive Summary</h1>
+<p>This analysis uses data collected through various sensors placed on several participants and on a dumbbell they used. Each participant was asked to perform five sets of ten dumbbell curl repetitions. In four of the ten sets, the participants were guided by an expert to perform the motion incorrectly in a specific way (e.g., leaning too far forward or not performing the entire range of motion). One of the five sets was performed with correct form. The question this analysis hopes to answer is: Is there a way to measure and distinguish correctly performed exercises from incorrectly performed exercises.</p>
+<p>The analysis uses a random forest algorithm to find the most important variables of the 160 collected and uses it to make predictions against both a validation and test set. The chosen prediction model was able to correctly classify 20 out of 20 cases in the test set, confirming that such predictions are possible–at least in the setting where the correct and incorrect postures/motions exist within a specified range, guided by a professional.</p>
+</div>
+
+<div id="get-and-process-the-data">
+<h1>
+<a id="get-and-process-the-data" class="anchor" href="#get-and-process-the-data" aria-hidden="true"><span class="octicon octicon-link"></span></a>Get and Process the Data</h1>
+<p>The first step of the analysis to retrieve the data from the internet, save it to a local folder and load it into R.</p>
+<pre><code>download.file(url="https://d396qusza40orc.cloudfront.net/predmachlearn/pml-training.csv", destfile="train_031215.csv", method="curl")
+download.file(url="https://d396qusza40orc.cloudfront.net/predmachlearn/pml-testing.csv", destfile="test_031215.csv", method="curl")
+
+train &lt;- read.csv("train_031215.csv")
+test &lt;- read.csv("test_031215.csv")</code></pre>
+<p>Then we divide the data into training and validation sets.</p>
+<pre><code>inTrain &lt;- createDataPartition(y=train$classe, p=0.9, list=FALSE)
+rawTrain &lt;- train[inTrain,]
+vTrain &lt;- train[-inTrain,]</code></pre>
+<p>We will need to pare away predictors with little value. To begin, we identify predictors with high numbers of NAs or no measurements at all. After this the dataset only has 53 predictors.</p>
+<pre><code>x &lt;- sapply(rawTrain, function(x) sum(is.na(x)))
+x &lt;- x[x &gt; 0]
+x &lt;-names(x)
+rawTrain &lt;- rawTrain[,!(names(rawTrain) %in% x)]
+rawTrain &lt;- select(rawTrain, -1, -c(3:7), -c(12:20), -c(43:48), -c(52:61), -c(74:82))</code></pre>
+<p>To futher eliminate unnecessary predictors, random forest (from the caret package) was run to determine the most important variables.</p>
+<pre><code>trialRF &lt;- train(classe ~ ., rawTrain, method="rf", importance=TRUE, prox=TRUE)
+save(trialRF, file = "trialRF.RData")</code></pre>
+<pre><code>load("trialRF.RData")
+varImp(trialRF)</code></pre>
+<pre><code>## Loading required package: randomForest
+## randomForest 4.6-10
+## Type rfNews() to see new features/changes/bug fixes.
+## 
+## Attaching package: 'randomForest'
+## 
+## The following object is masked from 'package:dplyr':
+## 
+##     combine</code></pre>
+<pre><code>## rf variable importance
+## 
+##   variables are sorted by maximum importance across the classes
+##   only 20 most important variables shown (out of 56)
+## 
+##                       A     B     C     D      E
+## roll_belt         78.24 82.72 84.40 79.62 100.00
+## pitch_belt        32.71 92.14 63.78 51.68  41.32
+## magnet_dumbbell_y 65.44 66.85 87.91 58.69  56.05
+## pitch_forearm     59.92 73.46 87.68 56.79  63.59
+## yaw_belt          56.90 64.80 62.61 70.16  46.89
+## magnet_dumbbell_z 69.34 56.56 64.28 50.80  51.20
+## roll_forearm      51.43 44.14 50.32 37.48  38.68
+## accel_forearm_x   24.49 43.02 35.62 50.35  41.36
+## gyros_dumbbell_y  37.63 31.66 44.07 28.71  30.81
+## accel_dumbbell_y  39.01 36.60 43.76 34.84  38.94
+## accel_dumbbell_z  29.97 36.53 26.43 34.03  43.45
+## yaw_arm           41.88 32.91 28.06 36.88  22.63
+## gyros_belt_z      24.28 31.39 34.19 26.20  40.88
+## magnet_belt_z     24.11 37.77 25.19 32.08  29.64
+## magnet_arm_z      18.48 33.93 22.99 22.89  21.28
+## gyros_forearm_y   17.76 32.68 29.69 20.90  18.34
+## roll_dumbbell     22.38 32.39 22.65 25.31  28.65
+## gyros_belt_x      32.36 18.00 21.63 11.53  17.14
+## magnet_belt_x     17.66 32.26 30.19 20.16  26.53
+## magnet_forearm_z  30.27 30.96 27.26 26.80  31.98</code></pre>
+<p>Of the top 20 variables listed none after the first 8 have an importance value &gt; 50.0 for any of the 5 classes. So those variables are captured as the maximum number of potential predictors.</p>
+<p>Now we look at the signficance values of the remaining predictors.</p>
+<pre><code>fit1 &lt;- glm(classe ~ roll_belt + pitch_belt + pitch_forearm + magnet_dumbbell_y + magnet_dumbbell_z + yaw_belt + accel_forearm_x + roll_forearm, data = rawTrain, family="quasibinomial")
+summary(fit1)</code></pre>
+<pre><code>## 
+## Call:
+## glm(formula = classe ~ roll_belt + pitch_belt + pitch_forearm + 
+##     magnet_dumbbell_y + magnet_dumbbell_z + yaw_belt + accel_forearm_x + 
+##     roll_forearm, family = "quasibinomial", data = rawTrain)
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -2.9618  -0.4956   0.4362   0.7443   3.4510  
+## 
+## Coefficients:
+##                     Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)       -3.288e+00  2.174e-01 -15.126  &lt; 2e-16 ***
+## roll_belt          4.944e-02  3.070e-03  16.105  &lt; 2e-16 ***
+## pitch_belt        -9.706e-02  7.537e-03 -12.878  &lt; 2e-16 ***
+## pitch_forearm      3.674e-02  1.156e-03  31.779  &lt; 2e-16 ***
+## magnet_dumbbell_y  2.099e-05  1.031e-04   0.204    0.839    
+## magnet_dumbbell_z  6.729e-03  2.655e-04  25.349  &lt; 2e-16 ***
+## yaw_belt          -4.119e-02  2.871e-03 -14.348  &lt; 2e-16 ***
+## accel_forearm_x   -1.036e-03  1.844e-04  -5.621 1.93e-08 ***
+## roll_forearm       4.110e-03  2.541e-04  16.178  &lt; 2e-16 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## (Dispersion parameter for quasibinomial family taken to be 1.43442)
+## 
+##     Null deviance: 21089  on 17661  degrees of freedom
+## Residual deviance: 16131  on 17653  degrees of freedom
+## AIC: NA
+## 
+## Number of Fisher Scoring iterations: 6</code></pre>
+<p>A quick test, looking at the significance of the variables in a generalized linear model (family = “quasibinomial” i.e., “logit”) reveals that one of them, “magnet_dumbell_y,” has no significance in the presence of the other variables, so it to is cut from the prediction process.</p>
+<pre><code>finalTrain &lt;- select(rawTrain, classe, roll_belt, pitch_belt, pitch_forearm, magnet_dumbbell_z, yaw_belt, accel_forearm_x, roll_forearm)</code></pre>
+<p>Random Forest was run again in order to create the best route given the new variable set.</p>
+<pre><code>finalRF &lt;- train(classe ~ ., finalTrain, method="rf", importance=TRUE, prox=TRUE, cache=TRUE)
+save(finalRF, file = "finalRF.RData")</code></pre>
+<pre><code>finalRF$finalModel</code></pre>
+<pre><code>## 
+## Call:
+##  randomForest(x = x, y = y, mtry = param$mtry, importance = TRUE,      proximity = TRUE, cache = TRUE) 
+##                Type of random forest: classification
+##                      Number of trees: 500
+## No. of variables tried at each split: 4
+## 
+##         OOB estimate of  error rate: 1.25%
+## Confusion matrix:
+##      A    B    C    D    E class.error
+## A 4992   22    7    0    1 0.005973716
+## B   12 3347   49    8    2 0.020772382
+## C    4   18 3040   16    2 0.012987013
+## D    0    4   23 2860    8 0.012089810
+## E    0   20   13   11 3203 0.013550970</code></pre>
+<p>We can see from the call that the predicted out of sample error rate is 1.25%. So we use the model to predict the values in the validation set:</p>
+<pre><code>load("finalRF.RData")
+pred &lt;- predict(finalRF, vTrain)
+vTrain$right &lt;- pred==vTrain$classe
+table(pred, vTrain$classe)</code></pre>
+<pre><code>##     
+## pred   A   B   C   D   E
+##    A 557   0   0   0   0
+##    B   1 378   0   0   0
+##    C   0   0 342   1   0
+##    D   0   1   0 319   1
+##    E   0   0   0   1 359</code></pre>
+<p>We can see that the chosen model missed only 26 of the 1960 values in the training set, an accuracy rating of ~1.33, pretty close to the predicted rate. Although not perfect, the accuracy is quite good and the model is adopted for predicting the values in the test set. Of the 20 cases in the test set, the chosen model predicted all 20 correctly.</p>
+<p>============================================================ The following code was used to create text files for submitting predictions of the test cases to Coursera for evaluation. pml_write_files = function(x){ n = length(x) for(i in 1:n){ filename = paste0(“problem_id_”,i,“.txt”) write.table(x[i],file=filename,quote=FALSE,row.names=FALSE,col.names=FALSE) } }</p>
+<div id="citation">
+<h3>
+<a id="citation" class="anchor" href="#citation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Citation:</h3>
+<p>This dataset is licensed under the Creative Commons license (CC BY-SA). The CC BY-SA license means you can remix, tweak, and build upon this work even for commercial purposes, as long as you credit the authors of the original work and you license your new creations under the identical terms we are licensing to you. This license is often compared to “copyleft” free and open source software licenses. All new works based on this dataset will carry the same license, so any derivatives will also allow commercial use.</p>
+<p>Velloso, E.; Bulling, A.; Gellersen, H.; Ugulino, W.; Fuks, H. Qualitative Activity Recognition of Weight Lifting Exercises. Proceedings of 4th International Conference in Cooperation with SIGCHI (Augmented Human ’13) . Stuttgart, Germany: ACM SIGCHI, 2013.</p>
+</div>
+
+<p></p>
+</div>
+
+<p></p>
+</div>
+
+
+
+
+
+
+
+<p>
+</p>
+      </section>
+
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+    
+  </body>
+</html>
